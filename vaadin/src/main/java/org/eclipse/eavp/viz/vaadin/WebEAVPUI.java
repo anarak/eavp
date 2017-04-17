@@ -1,6 +1,11 @@
 package org.eclipse.eavp.viz.vaadin;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -21,7 +26,16 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("mytheme")
 public class WebEAVPUI extends UI {
-
+	/**
+	 * A serialization ID - if you remove this, OSGI DS will fail!
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The HttpService Reference for the OSGI framework.
+	 */
+	static private HttpService httpService;
+	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
@@ -44,4 +58,28 @@ public class WebEAVPUI extends UI {
     @VaadinServletConfiguration(ui = WebEAVPUI.class, productionMode = false)
     public static class WebEAVPUIServlet extends VaadinServlet {
     }
+    
+    /**
+	 * OSGi bundle activator with annotation instead of activator class.
+	 * 
+	 * @param context
+	 */
+	@Activate
+	public void start(BundleContext context) {
+		System.out.println("App Store VAADIN bundle started.");
+		try {
+			WebEAVPUI.httpService.registerServlet("/", new WebEAVPUIServlet(), null, null);
+		} catch (ServletException | NamespaceException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    
+	/**
+	 * 
+	 * @param httpService
+	 */
+	public void setService(HttpService httpService) {
+		WebEAVPUI.httpService = httpService;
+	}
 }
