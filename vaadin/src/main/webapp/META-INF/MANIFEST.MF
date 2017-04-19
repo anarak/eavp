@@ -24,6 +24,7 @@ Import-Package: javax.el,
  javax.servlet.jsp,
  javax.servlet.jsp.el,
  javax.servlet.jsp.tagext,
+ org.eclipse.eavp.viz.service,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component.annotations;version="1.2.0",
  org.osgi.service.http;version="1.2.1"

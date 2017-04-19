@@ -2,6 +2,9 @@ package org.eclipse.eavp.viz.vaadin;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.http.HttpService;
@@ -36,6 +39,12 @@ public class WebEAVPUI extends UI {
 	 */
 	static private HttpService httpService;
 	
+	
+	/**
+	 *  The reference for EAVP service
+	 */
+	private static IVizServiceFactory factory;
+	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
@@ -66,7 +75,7 @@ public class WebEAVPUI extends UI {
 	 */
 	@Activate
 	public void start(BundleContext context) {
-		System.out.println("App Store VAADIN bundle started.");
+		System.out.println("EAVP VAADIN bundle started.");		
 		try {
 			WebEAVPUI.httpService.registerServlet("/", new WebEAVPUIServlet(), null, null);
 		} catch (ServletException | NamespaceException e) {
@@ -81,5 +90,20 @@ public class WebEAVPUI extends UI {
 	 */
 	public void setService(HttpService httpService) {
 		WebEAVPUI.httpService = httpService;
+	}
+	
+	
+	/**
+	 * Sets the factory for EAVP services
+	 * @param input
+	 */
+	public void setVizServiceFactory(IVizServiceFactory input) {
+		if (input != null) {
+			factory = input;
+			System.out.println("The factory is set!");
+		}
+		else {
+			System.out.println("The factory is not set, the reference is null!");
+		}
 	}
 }
