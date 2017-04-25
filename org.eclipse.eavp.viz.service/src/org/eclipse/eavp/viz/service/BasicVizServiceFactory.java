@@ -126,30 +126,12 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
 
-			// Register the plot editor as default editor for all file
-			// extensions handled by the new viz service
-			for (String ext : service.getSupportedExtensions()) {
-				EditorRegistry editorReg = (EditorRegistry) PlatformUI
-						.getWorkbench().getEditorRegistry();
-				EditorDescriptor editor = (EditorDescriptor) editorReg
-						.findEditor("org.eclipse.eavp.viz.service.PlotEditor");
-				FileEditorMapping mapping = new FileEditorMapping(ext);
-				mapping.addEditor(editor);
-				mapping.setDefaultEditor(editor);
-
-				IFileEditorMapping[] mappings = editorReg
-						.getFileEditorMappings();
-				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length
-						+ 1];
-				for (int i = 0; i < mappings.length; i++) {
-					newMappings[i] = (FileEditorMapping) mappings[i];
-				}
-				newMappings[mappings.length] = mapping;
-				editorReg.setFileEditorMappings(newMappings);
-			}
+			// Actual association is implemented in the child class BasicEclipseVizServiceFactory
+			// as it's related to Eclipse's internal workbench
+			associateFileType(service);
 
 			logger.info("VizServiceFactory message: " + "Viz service \"" + name
-					+ "\" registered.");
+					+ "\" registered without ui workbench.");
 		}
 
 		return;
@@ -173,5 +155,13 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		if (service != null) {
 			serviceMap.remove(service.getName());
 		}
+	}
+
+	/**
+	 * Do nothing
+	 * @param service
+	 */
+	protected void associateFileType(IVizService service) {
+		return;
 	}
 }
